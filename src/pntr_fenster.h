@@ -28,7 +28,7 @@ int run() {
   struct fenster app = app_init(screen);
   struct fenster_audio fa = {0};
   float audio[FENSTER_AUDIO_BUFSZ] = {0};
-  int16_t ua[FENSTER_AUDIO_BUFSZ*2] = {0};
+  int16_t ia[FENSTER_AUDIO_BUFSZ * 2] = {0};
   
   fenster_open(&app);
   fenster_audio_open(&fa);
@@ -40,16 +40,17 @@ int run() {
     app_update(screen, now);
     int n = fenster_audio_available(&fa);
     if (n > 0) {
-      cm_process((void*) ua, n*2);
+      cm_process((void*) ia, n*2);
       
-for (int i = 0; i < n; i++) {
-    // Convert from [-32768, 32767] to [-1.0, 1.0]
-    float left = ua[i * 2] / 32768.0f;
-    float right = ua[i * 2 + 1] / 32768.0f;
-    
-    // Average the channels
-    audio[i] = (left + right) * 0.5f;
-}
+      // turn u16-interleave-stereo into f32-mono
+      for (int i = 0; i < n; i++) {
+        // Convert from [-32768, 32767] to [-1.0, 1.0]
+        float left = ia[i * 2] / 32768.0f;
+        float right = ia[i * 2 + 1] / 32768.0f;
+        
+        // Average the channels
+        audio[i] = (left + right) * 0.5f;
+      }
       
       app_get_audio(audio, n);
       fenster_audio_write(&fa, audio, n);
