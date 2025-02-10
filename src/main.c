@@ -15,7 +15,7 @@ struct fenster app_init(pntr_image* screen) {
     .buf = &screen->data->value
   };
 
-  src = cm_new_source_from_file("loop.wav");
+  src = pntr_load_sound("loop.wav");
   cm_set_loop(src, 1);
   cm_play(src);
 

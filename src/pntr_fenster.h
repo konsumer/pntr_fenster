@@ -13,6 +13,14 @@ void app_update(pntr_image* screen, int64_t now);
 void app_get_audio(float* audio, int n);
 void app_cleanup();
 
+// wrappers more like pntr_app
+cm_Source* pntr_load_sound(const char* fileName) {
+  unsigned int bytesRead = 0;
+  unsigned char* bytes = pntr_load_file(fileName, &bytesRead);
+  return cm_new_source_from_mem(bytes, bytesRead);
+}
+
+
 int run() {
   pntr_image* screen = pntr_new_image(400, 400);
   cm_init(44100);
