@@ -1,3 +1,5 @@
+.PHONY: clean
+
 CFLAGS ?= -Wall -Wextra -std=c99 -I src/lib -I src/lib/external
 
 ifeq ($(OS),Windows_NT)
@@ -11,5 +13,8 @@ else
 	endif
 endif
 
-example: src/main.c
+example: src/main.c src/lib/external/cmixer.c
 	$(CC) $? -o $@ $(CFLAGS) $(LDFLAGS)
+
+clean:
+	rm -f example
